@@ -39,6 +39,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
@@ -116,10 +117,12 @@ public class InAppBrowser extends CordovaPlugin {
     private static final String FOOTER_COLOR = "footercolor";
     private static final String BEFORELOAD = "beforeload";
     private static final String FULLSCREEN = "fullscreen";
+    public static final String X = "x";
+    public static final String Y = "y";
+    public static final String WIDTH = "width";
+    public static final String HEIGHT = "height";
 
-    private static final int TOOLBAR_HEIGHT = 48;
-
-    private static final List customizableOptions = Arrays.asList(CLOSE_BUTTON_CAPTION, TOOLBAR_COLOR, NAVIGATION_COLOR, CLOSE_BUTTON_COLOR, FOOTER_COLOR);
+    private static final List customizableOptions = Arrays.asList(CLOSE_BUTTON_CAPTION, TOOLBAR_COLOR, NAVIGATION_COLOR, CLOSE_BUTTON_COLOR, FOOTER_COLOR, X, Y, WIDTH, HEIGHT);
 
     private InAppBrowserDialog dialog;
     private WebView inAppWebView;
@@ -793,6 +796,17 @@ public class InAppBrowser extends CordovaPlugin {
                 dialog.setCancelable(true);
                 dialog.setInAppBroswer(getInAppBrowser());
 
+                Window window = dialog.getWindow();
+                WindowManager.LayoutParams wlp = window.getAttributes();
+                wlp.gravity = Gravity.TOP | Gravity.LEFT;
+                wlp.width = features.get(WIDTH) != null ? this.dpToPixels(Integer.parseInt(features.get(WIDTH))) : WindowManager.LayoutParams.MATCH_PARENT;
+                wlp.height = features.get(HEIGHT) != null ? this.dpToPixels(Integer.parseInt(features.get(HEIGHT))) : WindowManager.LayoutParams.MATCH_PARENT;
+                wlp.dimAmount=0.5f;
+                window.setFlags(LayoutParams.FLAG_NOT_TOUCH_MODAL,LayoutParams.FLAG_NOT_TOUCH_MODAL);
+                window.setFlags(LayoutParams.FLAG_NOT_FOCUSABLE,LayoutParams.FLAG_NOT_FOCUSABLE);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                window.setAttributes(wlp);
+
                 // Main container layout
                 LinearLayout main = new LinearLayout(cordova.getActivity());
                 main.setOrientation(LinearLayout.VERTICAL);
@@ -801,7 +815,7 @@ public class InAppBrowser extends CordovaPlugin {
                 RelativeLayout toolbar = new RelativeLayout(cordova.getActivity());
                 //Please, no more black!
                 toolbar.setBackgroundColor(toolbarColor);
-                toolbar.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(TOOLBAR_HEIGHT)));
+                toolbar.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(44)));
                 toolbar.setPadding(this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2));
                 if (leftToRight) {
                     toolbar.setHorizontalGravity(Gravity.LEFT);
@@ -903,7 +917,7 @@ public class InAppBrowser extends CordovaPlugin {
                     _footerColor = android.graphics.Color.LTGRAY;
                 }
                 footer.setBackgroundColor(_footerColor);
-                RelativeLayout.LayoutParams footerLayout = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(TOOLBAR_HEIGHT));
+                RelativeLayout.LayoutParams footerLayout = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(44));
                 footerLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
                 footer.setLayoutParams(footerLayout);
                 if (closeButtonCaption != "") footer.setPadding(this.dpToPixels(8), this.dpToPixels(8), this.dpToPixels(8), this.dpToPixels(8));
@@ -972,7 +986,7 @@ public class InAppBrowser extends CordovaPlugin {
                     settings.setUserAgentString(overrideUserAgent);
                 }
                 if (appendUserAgent != null) {
-                    settings.setUserAgentString(settings.getUserAgentString() + " " + appendUserAgent);
+                    settings.setUserAgentString(settings.getUserAgentString() + appendUserAgent);
                 }
 
                 //Toggle whether this is enabled or not!
@@ -1030,9 +1044,10 @@ public class InAppBrowser extends CordovaPlugin {
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 lp.copyFrom(dialog.getWindow().getAttributes());
-                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-
+                lp.x = features.get(X) != null ? this.dpToPixels(Integer.parseInt(features.get(X))) : 0;
+                lp.y = features.get(Y) != null ? this.dpToPixels(Integer.parseInt(features.get(Y))) : 0;
+                lp.width = features.get(WIDTH) != null ? this.dpToPixels(Integer.parseInt(features.get(WIDTH))) : WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = features.get(HEIGHT) != null ? this.dpToPixels(Integer.parseInt(features.get(HEIGHT))) : WindowManager.LayoutParams.MATCH_PARENT;
                 if (dialog != null) {
                     dialog.setContentView(main);
                     dialog.show();
