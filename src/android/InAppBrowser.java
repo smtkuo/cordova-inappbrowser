@@ -803,8 +803,6 @@ public class InAppBrowser extends CordovaPlugin {
                 wlp.height = features.get(HEIGHT) != null ? this.dpToPixels(Integer.parseInt(features.get(HEIGHT))) : WindowManager.LayoutParams.MATCH_PARENT;
                 wlp.dimAmount=0.5f;
                 window.setFlags(LayoutParams.FLAG_NOT_TOUCH_MODAL,LayoutParams.FLAG_NOT_TOUCH_MODAL);
-                window.setFlags(LayoutParams.FLAG_NOT_FOCUSABLE,LayoutParams.FLAG_NOT_FOCUSABLE);
-                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                 window.setAttributes(wlp);
 
                 // Main container layout
@@ -815,7 +813,7 @@ public class InAppBrowser extends CordovaPlugin {
                 RelativeLayout toolbar = new RelativeLayout(cordova.getActivity());
                 //Please, no more black!
                 toolbar.setBackgroundColor(toolbarColor);
-                toolbar.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(44)));
+                toolbar.setLayoutParams(new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 toolbar.setPadding(this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2), this.dpToPixels(2));
                 if (leftToRight) {
                     toolbar.setHorizontalGravity(Gravity.LEFT);
@@ -917,7 +915,7 @@ public class InAppBrowser extends CordovaPlugin {
                     _footerColor = android.graphics.Color.LTGRAY;
                 }
                 footer.setBackgroundColor(_footerColor);
-                RelativeLayout.LayoutParams footerLayout = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.dpToPixels(44));
+                RelativeLayout.LayoutParams footerLayout = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                 footerLayout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
                 footer.setLayoutParams(footerLayout);
                 if (closeButtonCaption != "") footer.setPadding(this.dpToPixels(8), this.dpToPixels(8), this.dpToPixels(8), this.dpToPixels(8));
